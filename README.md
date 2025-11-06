@@ -1,5 +1,8 @@
 # Arch Easy-Install - an Installation Script for Arch Linux with Automatic Hardware Detection and Driver Installation
 
+![status](https://img.shields.io/badge/status-development-yellow)
+![license](https://img.shields.io/badge/license-GPL--3.0-blue)
+
 ### Things I'm adding to this
 
 1. Automatic hardware detection and driver installation.
