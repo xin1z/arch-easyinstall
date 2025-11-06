@@ -1,4 +1,4 @@
-# Arch Easy-Install - an Install Script for Arch Linux with Automatic Detection and Installation for Drivers
+# Arch Easy-Install - an Installation Script for Arch Linux with Automatic Detection and Installation for Drivers
 
 ### Things I'm adding to this
 
