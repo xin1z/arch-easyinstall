@@ -1,2 +1,66 @@
-# arch-easyinstall
-An Arch Linux install script with automatic detection and installation for drivers. Written in Bash.
+# Arch Easy-Install - an Install Script for Arch Linux with Automatic Detection and Installation for Drivers
+
+### Things I'm adding to this
+
+1. Automatic hardware detection and driver installation.
+2. Modularized scripts
+3. Auto-configuration for various major desktop environments.
+
+### Introduction
+
+Arch Easy-Install is an Arch Linux installation script with automatic hardware detection(not implemented yet) and driver installation(also not implemented...).
+
+Status: *In development*, not fully functional. Use with caution.
+
+### Features
+
+* Automatic detection of available disks and hardware (not implemented yet).
+* Automatic creation of partitions(EFI, ROOT, SWAP) with recommended sizes.
+* Automatic formatting and basic system installation (not implemented yet).
+* Optional driver installation after base system setup (not implemented yet).
+
+### Requirements
+
+* Arch Linux live environment
+* `git` installed in the live environment
+
+Install `git` if needed:
+
+```bash
+pacman -Sy git
+```
+
+### Installation
+
+Clone the repository and run the script with the commands below:
+
+```bash
+git clone https://github.com/xin1z/arch-easyinstall.git
+cd arch-easyinstall
+chmod +x arch-easyinstall.sh
+./arch-easyinstall.sh
+```
+
+Then, follow the interactive prompts to select the target disk, configure SWAP size, and confirm partitioning.
+
+> Warning: This script will erase all data on the selected disk.
+
+## Usage (For now)
+
+1. Select the target disk where you want to install the OS when prompted.
+2. Confirm that you understand all data on the disk will be erased.
+3. Optionally specify SWAP size, or use the recommended value.
+4. the script will automatically create partitions and format them.
+
+*etc.*
+
+*And yeah, that's everything it can do for now. I'll implement other features in the future.*
+
+## License
+
+This project is licensed under **GPL-3.0 License**.
+
+* You are free to fork and distribute it under the same license.
+* If you use any source code from this project, your project must also be open-source under GPL-3.0.
+
+For full license details, see [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html).
