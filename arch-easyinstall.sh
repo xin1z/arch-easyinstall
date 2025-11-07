@@ -16,14 +16,40 @@ echo "Available disks:"
 
 lsblk -dno NAME,SIZE,TYPE | awk '$3=="disk" || $3=="rom" {print " /dev/"$1, $2}'
 
+# Parameters of the size of EFI && the minimun size of ROOT
+EFI_SIZE=512
+ROOT_MIN=2048
+
+DISK_SIZE_MIN=$((EFI_SIZE + ROOT_MIN))
+
 echo ""
-read -r -p "Please select the target disk to install (e.g. /dev/sda, /dev/vda, /dev/nvmeXnX etc.): " TARGET_DISK
+read -r -p "Please select the target disk to install (e.g. /dev/sda, /dev/vda, /dev/nvmeXnX etc.). The size should be at least ${DISK_SIZE_MIN} MiB in total: " TARGET_DISK
 
 # Simple input validation
 while [[ ! -b "${TARGET_DISK}" ]]; do
     read -r -p  "Error: disk ${TARGET_DISK} doesn't exist or isn't a block device. Try again: " TARGET_DISK
 done
 
+# Get Size of the selected disk
+DISK_SIZE_MiB=$(parted -s "$TARGET_DISK" unit MiB print \
+    | awk '/^Disk/ {gsub("MiB","",$3); print int($3); exit}')
+if [[ -z "$DISK_SIZE_MiB" || "$DISK_SIZE_MiB" -le 0 ]]; then
+    echo "Error: Unable to detect disk size for ${TARGET_DISK}."
+    exit 1
+fi
+
+# Validate if the size of the selected disk can be used
+while [[ ! "${DISK_SIZE_MiB}" -gt "${DISK_SIZE_MIN}" ]]; do
+    read -r -p "The size of the selected disk isn't greater than ${DISK_SIZE_MIN}, please try again: " TARGET_DISK
+    DISK_SIZE_MiB=$(parted -s "$TARGET_DISK" unit MiB print \
+        | awk '/^Disk/ {gsub("MiB","",$3); print int($3); exit}')
+    if [[ -z "$DISK_SIZE_MiB" || "$DISK_SIZE_MiB" -le 0 ]]; then
+        echo "Error: Unable to detect disk size for ${TARGET_DISK}."
+        exit 1
+    fi
+done
+
+    
 echo "target disk CONFIRMED as ${TARGET_DISK}"
 
 # Ask if really want to proceed
@@ -46,23 +72,32 @@ fi
 echo ""
 echo "START PARTITIONING:"
 
-
 # ---Create SWAP---
 # Get size of RAM (MiB)
 TOTAL_RAM=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
 
 # Set recommended size for SWAP
-if [[ "$TOTAL_RAM" -lt 2048 ]]; then
+if (( $TOTAL_RAM < 2048 )); then
     RECOMMENDED_SWAP=2048
-elif [[ "$TOTAL_RAM" -le 8192 ]]; then
+elif (( $TOTAL_RAM <= 8192 )); then
     RECOMMENDED_SWAP=$TOTAL_RAM
 else
     RECOMMENDED_SWAP=4096
 fi
 
+# Get available space that can be allocated to SWAP
+SWAP_SPACE_AVAILABLE=$((DISK_SIZE_MiB - ROOT_MIN - EFI_SIZE - 2))
+if (( $SWAP_SPACE_AVAILABLE <= 0 )); then
+    SWAP_SPACE_AVAILABLE=0
+fi
+
+if [[ ! "${SWAP_SPACE_AVAILABLE}" -gt "${RECOMMENDED_SWAP}" ]]; then
+    RECOMMENDED_SWAP=${SWAP_SPACE_AVAILABLE}
+fi
+
 echo ""
 echo "System RAM detected: ${TOTAL_RAM} MiB"
-echo "Recommended SWAP size: ${RECOMMENDED_SWAP} MiB (you can modify)"
+echo "Recommended SWAP size: ${RECOMMENDED_SWAP} MiB (you can modify), Space available to be allocated to SWAP: ${SWAP_SPACE_AVAILABLE}"
 
 # ask for spaces allocated for SWAP
 read -r -p "Space allocated for SWAP (in MiB, leave blank to use the recommended value, input 0 to skip): " SWAP_SPACE_INPUT
@@ -82,30 +117,25 @@ if [[ -z "$SWAP_SPACE_INPUT" || "$SWAP_SPACE_INPUT" == "$RECOMMENDED_SWAP" ]]; t
 elif [[ "$SWAP_SPACE_INPUT" == "0" ]]; then
     SWAP_SPACE=0
     echo "No SWAP will be created."
+elif [[ "$SWAP_SPACE_INPUT" -gt "$SWAP_SPACE_AVAILABLE" ]]; then
+    SWAP_SPACE=${SWAP_SPACE_AVAILABLE}
+    echo "Input ${SWAP_SPACE_INPUT} isn't available, ${SWAP_SPACE_AVAILABLE} MiB will be allocated to SWAP"
 else
     SWAP_SPACE=$SWAP_SPACE_INPUT
     echo "SWAP will be created with ${SWAP_SPACE} MiB in size."
 fi
 
 
-# ---Start automatic partitioning (GPT+UEFI)---
-
 # Define starting points for partitions
 PART_START="1MiB"
-
+PART_START_MiB=1
 # End point for EFI
-EFI_END="513MiB"
+EFI_END="$((PART_START_MiB + EFI_SIZE))MiB"
 # Starting point of Root
 ROOT_START="${EFI_END}"
 
 # Calculate end point of Root
 if [[ "$SWAP_SPACE" -gt 0 ]]; then
-    DISK_SIZE_MiB=$(parted -s "$TARGET_DISK" unit MiB print \
-                | awk '/^Disk/ {gsub("MiB","",$3); print int($3); exit}')
-    if [[ -z "$DISK_SIZE_MiB" || "$DISK_SIZE_MiB" -le 0 ]]; then
-        echo "Error: Unable to detect disk size for ${TARGET_DISK}."
-        exit 1
-    fi
     ROOT_END_MiB=$((DISK_SIZE_MiB - SWAP_SPACE - 2))
     ROOT_END="${ROOT_END_MiB}MiB"
     SWAP_START="$((ROOT_END_MiB + 1))MiB"
