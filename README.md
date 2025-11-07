@@ -6,12 +6,12 @@
 ### Things I'm adding to this
 
 1. Automatic hardware detection and driver installation.
-2. Modularized scripts
+2. Modularized scripts.
 3. Auto-configuration for various major desktop environments.
 
 ### Introduction
 
-Arch Easy-Install is an Arch Linux installation script with automatic hardware detection(not implemented yet) and driver installation(also not implemented...).
+Arch Easy-Install is an Arch Linux installation script with automatic hardware detection (not implemented yet) and driver installation (also not implemented...).
 
 Status: *In development*, not fully functional. Use with caution.
 
@@ -40,13 +40,15 @@ Clone the repository and run the script with the commands below:
 ```bash
 git clone https://github.com/xin1z/arch-easyinstall.git
 cd arch-easyinstall
-chmod +x arch-easyinstall.sh
-./arch-easyinstall.sh
+chmod +x main.sh ./modules/*
+./main.sh
 ```
 
 Then, follow the interactive prompts to select the target disk, configure SWAP size, and confirm partitioning.
 
 > Warning: This script will erase all data on the selected disk.
+
+Or, since this is a modularized script, you can also choose to run those modular scripts in `modules/` seperately. For usage of specific script, run `./{script_name}.sh` to know the exact syntax.
 
 ## Usage (For now)
 
