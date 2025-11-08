@@ -17,10 +17,15 @@ Status: *In development*, not fully functional. Use with caution.
 
 ### Features
 
-* Automatic detection of available disks and hardware (not implemented yet).
+Implemented:
+
 * Automatic creation of partitions(EFI, ROOT, SWAP) with recommended sizes.
-* Automatic formatting and basic system installation (not implemented yet).
-* Optional driver installation after base system setup (not implemented yet).
+
+Not Implemented yet:
+
+* Automatic detection of available disks and hardware.
+* Automatic formatting and basic system installation.
+* Optional driver installation after base system setup.
 
 ### Requirements
 
