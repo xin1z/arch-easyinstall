@@ -10,7 +10,7 @@ TARGET_DISK="$3"
 DISK_SIZE_MiB=$4
 TMPFILE=${!#}
 
-if [[ -z "$EFI_SIZE" || -z "$ROOT_MIN" || -z "$TARGET_DISK" || -z "$DISK_SIZE_MiB" || -z "i$TMPFILE" ]]; then
+if [[ -z "$EFI_SIZE" || -z "$ROOT_MIN" || -z "$TARGET_DISK" || -z "$DISK_SIZE_MiB" || -z "$TMPFILE" ]]; then
     echo "Usage: $0 EFI_SIZE ROOT_MIN TARGET_DISK DISK_SIZE_MiB TMPFILE"
     exit 1
 fi
@@ -105,7 +105,7 @@ echo "Creating ROOT: start=$ROOT_START end=$ROOT_END"
 parted -s "${TARGET_DISK}" mkpart primary ext4 "${ROOT_START}" "${ROOT_END}"
 
 # create swap (if want)
-USE_SWAP=1
+USE_SWAP=0
 if (( SWAP_SPACE > 0 )); then
     USE_SWAP=1
     echo "Creating SWAP: start=$SWAP_START end=$SWAP_END"
