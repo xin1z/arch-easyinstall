@@ -17,10 +17,15 @@ Status: *In development*, not fully functional. Use with caution.
 
 ### Features
 
-* Automatic detection of available disks and hardware (not implemented yet).
+Implemented:
+
 * Automatic creation of partitions(EFI, ROOT, SWAP) with recommended sizes.
-* Automatic formatting and basic system installation (not implemented yet).
-* Optional driver installation after base system setup (not implemented yet).
+
+Not Implemented yet:
+
+* Automatic detection of available disks and hardware.
+* Automatic formatting and basic system installation.
+* Optional driver installation after base system setup.
 
 ### Requirements
 
@@ -48,7 +53,7 @@ Then, follow the interactive prompts to select the target disk, configure SWAP s
 
 > Warning: This script will erase all data on the selected disk.
 
-Or, since this is a modularized script, you can also choose to run those modular scripts in `modules/` seperately. For usage of specific script, run `./{script_name}.sh` to know the exact syntax.
+Or, since this is a modularized script, you can also choose to run those modular scripts in `modules/` seperately. Please run `./{script_name}.sh` to know the exact syntax.
 
 ## Usage (For now)
 
