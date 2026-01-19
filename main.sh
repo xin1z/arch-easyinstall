@@ -41,3 +41,9 @@ echo ""
     echo "Formatting partitions failed, aborting..."
     exit 1
 }
+
+echo ""
+./modules/04_mount_partitions.sh "$TARGET_DISK" "$USE_SWAP" || {
+    echo "Mounting partitions failed, aborting..."
+    exit 1
+}
