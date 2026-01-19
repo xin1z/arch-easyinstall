@@ -19,13 +19,13 @@ Status: *In development*, not fully functional. Use with caution.
 
 Implemented:
 
-* Automatic creation of partitions(EFI, ROOT, SWAP) with recommended sizes.
+* Automatically create, format and mount partitions (EFI, ROOT, SWAP) with recommended sizes.
 
 Not Implemented yet:
 
-* Automatic detection of available disks and hardware.
-* Automatic formatting and basic system installation.
-* Optional driver installation after base system setup.
+* Auto-detect available disks and hardware.
+* Auto-install the base system.
+* Optionally install drivers after base system setup.
 
 ### Requirements
 
@@ -61,6 +61,7 @@ Or, since this is a modularized script, you can also choose to run those modular
 2. Confirm that you understand all data on the disk will be erased.
 3. Optionally specify SWAP size, or use the recommended value.
 4. The script will automatically create partitions and format them.
+5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot/efi`.
 
 *etc.*
 
