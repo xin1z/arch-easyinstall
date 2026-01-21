@@ -17,7 +17,7 @@ ROOT_MIN=2048
 TMPFILE=$(mktemp)
 
 ./modules/01_select_disk.sh "$EFI_SIZE" "$ROOT_MIN" "$TMPFILE" || {
-    echo "Disk selection failed, aborting..."
+    echo "Error: Disk selection failed, aborting..."
     exit 1
 }
 
@@ -28,22 +28,34 @@ rm -f "$TMPFILE"
 TMPFILE=$(mktemp)
 echo ""
 ./modules/02_create_partitions.sh "$EFI_SIZE" "$ROOT_MIN" "$TARGET_DISK" "$DISK_SIZE_MiB" "$TMPFILE" || {
-    echo "Disk creation failed, aborting..."
+    echo "Error: Disk creation failed, aborting..."
     exit 1
 }
 
 eval "$(cat "$TMPFILE")"
 rm -f "$TMPFILE"
 
-# Start module
+# Start module format_partitions
 echo ""
 ./modules/03_format_partitions.sh "$TARGET_DISK" "$USE_SWAP" || {
-    echo "Formatting partitions failed, aborting..."
+    echo "Error: Formatting partitions failed, aborting..."
     exit 1
 }
 
+# Start module mount_partitions
 echo ""
 ./modules/04_mount_partitions.sh "$TARGET_DISK" "$USE_SWAP" || {
-    echo "Mounting partitions failed, aborting..."
+    echo "Error: Mounting partitions failed, aborting..."
+    exit 1
+}
+
+# Set default mount points
+MOUNT_POINT="/mnt"
+EFI_MOUNT_POINT="/mnt/boot/efi"
+
+# Start module pacstrap_partitions
+echo ""
+./modules/05_pacstrap_system.sh "${MOUNT_POINT}" || {
+    echo "Error: Pacstrapping partitions failed, aborting..."
     exit 1
 }
