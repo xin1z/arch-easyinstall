@@ -6,8 +6,7 @@
 ### Upcoming Features
 
 1. Automatic hardware detection and driver installation.
-2. Modularized scripts.
-3. Auto-configuration for various major desktop environments.
+2. Auto-configuration for various major desktop environments.
 
 ### Introduction
 
@@ -20,12 +19,13 @@ Status: *In development*, not fully functional. Use with caution.
 Implemented:
 
 * Automatically create, format and mount partitions (EFI, ROOT, SWAP) with recommended sizes.
+* Automatically pacstrap base system and install CPU ucode.
 
 Not Implemented yet:
 
 * Auto-detect available disks and hardware.
-* Auto-install the base system.
 * Optionally install drivers after base system setup.
+* Auto-install desktop environment.
 
 ### Requirements
 
@@ -61,7 +61,7 @@ Or, since this is a modularized script, you can also choose to run those modular
 2. Confirm that you understand all data on the disk will be erased.
 3. Optionally specify SWAP size, or use the recommended value.
 4. The script will automatically create partitions and format them.
-5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot/efi`.
+5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot/efi`, and pacstrap the base system.
 
 *etc.*
 
