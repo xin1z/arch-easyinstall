@@ -2,13 +2,13 @@
 
 set -e
 
-# Parameters of the size of EFI && the minimun size of ROOT
+# Parameters of the size of EFI && the minimum size of ROOT
 EFI_SIZE=$1
 ROOT_MIN=$2
 TMPFILE=${!#}
 
 if [[ -z "$EFI_SIZE" || -z "$ROOT_MIN" || -z "$TMPFILE" ]]; then
-    echo "Usage: $0 EFI_SIZE ROOT_MINi TMPFILE"
+    echo "Usage: $0 EFI_SIZE ROOT_MINI TMPFILE"
     exit 1
 fi
 
@@ -39,9 +39,9 @@ validate_disk() {
         return 1
     fi
 
-    # The size must be greater than the minimun value
+    # The size must be greater than the minimum value
     if (( size < DISK_SIZE_MIN )); then
-        echo "Error: disk size ${size}MiB is smaller than minimun ${DISK_SIZE_MIN}MiB."
+        echo "Error: disk size ${size}MiB is smaller than minimum ${DISK_SIZE_MIN}MiB."
         return 1
     fi
 

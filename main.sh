@@ -9,7 +9,7 @@ echo "arch-easyinstall: an easy-to-use Arch install script with automatic detect
 # Still in Development, remove when completed
 echo "This script is still in development, and can cause unexpected problems. Use with caution."
 
-# Set value for the size of EFI and the minimun size of ROOT
+# Set value for the size of EFI and the minimum size of ROOT
 EFI_SIZE=512
 ROOT_MIN=2048
 

@@ -33,7 +33,7 @@ mkfs.ext4 -F "${ROOT_PART}" -L ARCH_ROOT
 mkfs.fat -F32 "${EFI_PART}" -n EFI_SYSTEM
 
 # Enable SWAP (if exists)
-if [[ "$SWAP_SPACE" -gt 0 ]]; then
+if [[ "$USE_SWAP" -gt 0 ]]; then
     mkswap "${SWAP_PART}" -L ARCH_SWAP
 fi
 
