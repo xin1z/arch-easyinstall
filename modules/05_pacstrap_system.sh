@@ -10,7 +10,7 @@ if [[ -z "$MOUNT_POINT" ]]; then
     exit 1
 fi
 
-# Check if the mount points are valid
+# Check if the mount point is valid
 if ! mountpoint -q "$MOUNT_POINT"; then
     echo "Error: '$MOUNT_POINT' is not a valid mount point."
     exit 1
@@ -29,41 +29,32 @@ source "$(dirname "$0")/../packages.conf" || {
 echo ""
 echo "Pacstrapping packages..."
 echo "The following packages will be installed on ${MOUNT_POINT}:"
-echo "${BASE_PACKAGES[@]}"
-echo "${EXTRA_PACKAGES[@]}"
+echo "BASE: ${BASE_PACKAGES[@]}"
+echo "EXTRA: ${EXTRA_PACKAGES[@]}"
 
-echo "Installing base packages..."
-pacstrap $MOUNT_POINT ${BASE_PACKAGES[@]} --noconfirm || {
-    echo "Error: Unable to pacstrap base packages."
-    exit 1
-}
+# Aggregate packages
+declare -a FINAL_PACKAGES=()
+FINAL_PACKAGES+=("${BASE_PACKAGES[@]}")
+FINAL_PACKAGES+=("${EXTRA_PACKAGES[@]}")
 
-echo "Installing extra packages..."
-pacstrap $MOUNT_POINT ${EXTRA_PACKAGES[@]} --noconfirm || {
-    echo "Error: Unable to pacstrap extra packages."
-    exit 1
-}
-
-echo "Installing CPU ucode..."
+# Get CPU vendor
+echo ""
 echo "Checking CPU vendor..."
-
-# Get CPU vender
-CPU_VENDOR=$(lscpu | awk -F': +' '/Vendor ID:/ {print $2}')
-
-if [[ "$CPU_VENDOR" == "GenuineIntel" ]]; then
-    pacstrap $MOUNT_POINT intel-ucode --noconfirm || {
-        echo "Error: Unable to install Intel ucode."
-        exit 1
-    }
-    echo "Intel ucode installed successfully."
-elif [[ "$CPU_VENDOR" == "AuthenticAMD" ]]; then
-    pacstrap $MOUNT_POINT amd-ucode --noconfirm || {
-        echo "Error: Unable to install AMD ucode."
-        exit 1
-    }
-    echo "AMD ucode installed successfully."
+if grep -q "GenuineIntel" /proc/cpuinfo; then
+    FINAL_PACKAGES+=("intel-ucode")
+    echo "Intel CPU detected, package 'intel-ucode' will be installed."
+elif grep -q "AuthenticAMD" /proc/cpuinfo; then
+    FINAL_PACKAGES+=("amd-ucode")
+    echo "AMD CPU detected, package 'amd-ucode' will be installed."
 else
-    echo "Unknown CPU vendor: $CPU_VENDOR. Skipping ucode installation."
+    echo "Unable to detect CPU vendor. Skipping ucode installation."
 fi
+
+echo ""
+echo "Installing packages..."
+pacstrap $MOUNT_POINT "${FINAL_PACKAGES[@]}" --noconfirm || {
+    echo "Error: Unable to pacstrap packages."
+    exit 1
+}
 
 echo "Packages installed successfully."
