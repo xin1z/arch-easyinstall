@@ -59,3 +59,9 @@ echo ""
     echo "Error: Pacstrapping partitions failed, aborting..."
     exit 1
 }
+
+# Start module install_gpu_drivers
+./modules/06_install_gpu_drivers.sh "${MOUNT_POINT}" || {
+    echo "Error: Installing GPU drivers failed, aborting..."
+    exit 1
+}
