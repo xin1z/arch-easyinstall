@@ -13,10 +13,13 @@ echo "This script is still in development, and can cause unexpected problems. Us
 EFI_SIZE=512
 ROOT_MIN=2048
 
+# Get path
+BASE_DIR=$(cd "$(dirname "$0")" && pwd)
+
 # Start module select_disk
 TMPFILE=$(mktemp)
 
-./modules/01_select_disk.sh "$EFI_SIZE" "$ROOT_MIN" "$TMPFILE" || {
+"${BASE_DIR}/modules/01_select_disk.sh" "$EFI_SIZE" "$ROOT_MIN" "$TMPFILE" || {
     echo "Error: Disk selection failed, aborting..."
     exit 1
 }
@@ -27,7 +30,7 @@ rm -f "$TMPFILE"
 # Start module create_partitions
 TMPFILE=$(mktemp)
 echo ""
-./modules/02_create_partitions.sh "$EFI_SIZE" "$ROOT_MIN" "$TARGET_DISK" "$DISK_SIZE_MiB" "$TMPFILE" || {
+"${BASE_DIR}/modules/02_create_partitions.sh" "$EFI_SIZE" "$ROOT_MIN" "$TARGET_DISK" "$DISK_SIZE_MiB" "$TMPFILE" || {
     echo "Error: Disk creation failed, aborting..."
     exit 1
 }
@@ -37,14 +40,14 @@ rm -f "$TMPFILE"
 
 # Start module format_partitions
 echo ""
-./modules/03_format_partitions.sh "$TARGET_DISK" "$USE_SWAP" || {
+"${BASE_DIR}/modules/03_format_partitions.sh" "$TARGET_DISK" "$USE_SWAP" || {
     echo "Error: Formatting partitions failed, aborting..."
     exit 1
 }
 
 # Start module mount_partitions
 echo ""
-./modules/04_mount_partitions.sh "$TARGET_DISK" "$USE_SWAP" || {
+"${BASE_DIR}/modules/04_mount_partitions.sh" "$TARGET_DISK" "$USE_SWAP" || {
     echo "Error: Mounting partitions failed, aborting..."
     exit 1
 }
@@ -55,13 +58,13 @@ EFI_MOUNT_POINT="/mnt/boot/efi"
 
 # Start module pacstrap_partitions
 echo ""
-./modules/05_pacstrap_system.sh "${MOUNT_POINT}" || {
+"${BASE_DIR}/modules/05_pacstrap_system.sh" "${MOUNT_POINT}" || {
     echo "Error: Pacstrapping partitions failed, aborting..."
     exit 1
 }
 
 # Start module install_gpu_drivers
-./modules/06_install_gpu_drivers.sh "${MOUNT_POINT}" || {
+"${BASE_DIR}/modules/06_install_gpu_drivers.sh" "${MOUNT_POINT}" || {
     echo "Error: Installing GPU drivers failed, aborting..."
     exit 1
 }
