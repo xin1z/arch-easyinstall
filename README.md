@@ -15,6 +15,12 @@ Arch Easy-Install is an Archinstall script with automatic hardware detection and
 
 Status: *In development*, not fully functional. Use with caution.
 
+### What for?
+
+This project aims to provide a modular, script-based Arch Linux installer that prioritizes predictability and transparency over full automation.
+
+It isn't intended to replace the official `archinstall`, but to give users a more transparent installer. It is also not designed for beginners with no Linux experience.
+
 ### Features
 
 Implemented:
