@@ -5,12 +5,13 @@
 
 ### Upcoming Features
 
-1. Automatic hardware detection and driver installation.
+1. Auto-configuration for Optimus.
+2. Auto-configuration for PipeWire.
 2. Auto-configuration for various major desktop environments.
 
 ### Introduction
 
-Arch Easy-Install is an Arch Linux installation script with automatic hardware detection (not implemented yet) and driver installation (also not implemented...).
+Arch Easy-Install is an Archinstall script with automatic hardware detection and GPU driver installation. It's written fully in Bash.
 
 Status: *In development*, not fully functional. Use with caution.
 
@@ -20,11 +21,12 @@ Implemented:
 
 * Automatically create, format and mount partitions (EFI, ROOT, SWAP) with recommended sizes.
 * Automatically pacstrap base system and install CPU ucode.
+* Automatically detect and install proper GPU drivers.
 
 Not Implemented yet:
-
-* Auto-detect available disks and hardware.
-* Optionally install drivers after base system setup.
+* Automatically configure Optimus.
+* Automatically configure PipeWire.
+* Automatically configure fstab, Grub etc. after base system installation.
 * Auto-install desktop environment.
 
 ### Requirements
@@ -62,10 +64,9 @@ Or, since this is a modularized script, you can also choose to run those modular
 3. Optionally specify SWAP size, or use the recommended value.
 4. The script will automatically create partitions and format them.
 5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot/efi`, and pacstrap the base system.
+6. The script will detect and install GPU drivers after base system installation.
 
-*etc.*
-
-*And yeah, that's everything it can do for now. I'll add other features in the future.*
+More features will be added in future.
 
 ## License
 
