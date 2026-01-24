@@ -4,9 +4,10 @@
 set -e
 
 MOUNT_POINT="$1"
+TMPFILE="$2"
 
-if [[ -z "$MOUNT_POINT" ]]; then
-    echo "Usage: $0 MOUNT_POINT"
+if [[ -z "$MOUNT_POINT" || -z "$TMPFILE" ]]; then
+    echo "Usage: $0 MOUNT_POINT TMPFILE"
     exit 1
 fi
 
@@ -27,6 +28,7 @@ source "$(dirname "$0")/../packages.conf" || {
 echo "Detecting GPUs..."
 declare -a PACKAGE_LIST=()
 declare -i GPU_FOUND=0
+declare -i NVIDIA_PROPRIETARY_USED=0
 
 if lspci | grep -Eqi "VGA|3D|Display" | grep -qi "nvidia"; then
     GPU_FOUND+=1
@@ -35,6 +37,7 @@ if lspci | grep -Eqi "VGA|3D|Display" | grep -qi "nvidia"; then
         read -r -p "NVIDIA GPU detected, do you want to install the proprietary drivers? (y/n): " CONFIRM
         case "$CONFIRM" in
             [Yy]* )
+                NVIDIA_PROPRIETARY_USED=1
                 PACKAGE_LIST+=("${NVIDIA_PROPRIETARY[@]}")
                 echo "-> Proprietary drivers will be installed."
                 break ;;
@@ -64,6 +67,12 @@ if [[ $GPU_FOUND == 0 ]]; then
     echo "Unable to detect GPU. '${GENERAL_DRIVERS[@]}' will be installed."
 fi
 
+# Check if the GPUs are hybrid
+if [[ $NVIDIA_PROPRIETARY_USED  == 1 && $GPU_FOUND -gt 1 ]]; then
+    PACKAGE_LIST+=("${NVIDIA_PROPRIETARY_PRIME[@]}")
+    echo "NVIDIA hybrid GPU detected, '${NVIDIA_PROPRIETARY_PRIME[@]}' will be installed."
+fi
+
 # Pacstrap packages
 echo "The following packages will be installed:"
 echo "${PACKAGE_LIST[@]}"
@@ -84,3 +93,5 @@ pacstrap "$MOUNT_POINT" "${PACKAGE_LIST[@]}" --noconfirm || {
     exit 1
 }
 echo "Drivers installed successfully."
+
+echo "NVIDIA_PROPRIETARY_USED=${NVIDIA_PROPRIETARY_USED}" > "$TMPFILE"

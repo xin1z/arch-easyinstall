@@ -64,7 +64,12 @@ echo ""
 }
 
 # Start module install_gpu_drivers
-"${BASE_DIR}/modules/06_install_gpu_drivers.sh" "${MOUNT_POINT}" || {
+TMPFILE=$(mktemp)
+
+"${BASE_DIR}/modules/06_install_gpu_drivers.sh" "${MOUNT_POINT}" "${TMPFILE}" || {
     echo "Error: Installing GPU drivers failed, aborting..."
     exit 1
 }
+
+eval "$(cat "$TMPFILE")"
+rm -f "$TMPFILE"
