@@ -28,11 +28,13 @@ Implemented:
 * Automatically create, format and mount partitions (EFI, ROOT, SWAP) with recommended sizes.
 * Automatically pacstrap base system and install CPU ucode.
 * Automatically detect and install proper GPU drivers.
+* Automatically configure fstab, install GRUB or systemd-boot after base system installation.
 
 Not Implemented yet:
 * Automatically configure Optimus.
 * Automatically configure PipeWire.
-* Automatically configure fstab, Grub etc. after base system installation.
+* Automatically add arguments to GRUB or systemd-boot's config for NVIDIA proprietary drivers.
+* Automatically configure locale, add users and set password.
 * Auto-install desktop environment.
 
 ### Requirements
@@ -69,8 +71,9 @@ Or, since this is a modularized script, you can also choose to run those modular
 2. Confirm that you understand all data on the disk will be erased.
 3. Optionally specify SWAP size, or use the recommended value.
 4. The script will automatically create partitions and format them.
-5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot/efi`, and pacstrap the base system.
+5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot`, and pacstrap the base system.
 6. The script will detect and install GPU drivers after base system installation.
+7. It will run `genfstab`, install and configure GRUB or systemd-boot automatically.
 
 More features will be added in future.
 
