@@ -55,6 +55,7 @@ echo ""
 # Set default mount points
 MOUNT_POINT="/mnt"
 EFI_MOUNT_POINT="/mnt/boot"
+EFI_MOUNT_POINT_INSIDE="/boot"
 
 # Start module pacstrap_partitions
 echo ""
@@ -73,3 +74,9 @@ TMPFILE=$(mktemp)
 
 eval "$(cat "$TMPFILE")"
 rm -f "$TMPFILE"
+
+# Start module configure_fstab_and_boot
+"${BASE_DIR}/modules/07_configure_fstab_and_boot.sh" "${MOUNT_POINT}" "${EFI_MOUNT_POINT_INSIDE}" || {
+    echo "Error: Configuring fstab and bootloader failed, aborting..."
+    exit 1
+}
