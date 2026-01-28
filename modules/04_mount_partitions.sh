@@ -29,11 +29,11 @@ fi
 echo "Mounting ${ROOT_PART} to /mnt"
 mount "${ROOT_PART}" /mnt
 
-echo "Creating /mnt/boot/efi directory for EFI partition"
-mkdir -p /mnt/boot/efi
+echo "Creating /mnt/boot directory for EFI partition"
+mkdir -p /mnt/boot
 
-echo "Mounting ${EFI_PART} to /mnt/boot/efi"
-mount "${EFI_PART}" /mnt/boot/efi
+echo "Mounting ${EFI_PART} to /mnt/boot"
+mount "${EFI_PART}" /mnt/boot
 
 # ---enable SWAP---
 if [[ "$USE_SWAP" == "1" ]]; then

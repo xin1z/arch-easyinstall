@@ -54,7 +54,7 @@ echo ""
 
 # Set default mount points
 MOUNT_POINT="/mnt"
-EFI_MOUNT_POINT="/mnt/boot/efi"
+EFI_MOUNT_POINT="/mnt/boot"
 
 # Start module pacstrap_partitions
 echo ""
