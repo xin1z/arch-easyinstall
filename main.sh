@@ -76,7 +76,7 @@ eval "$(cat "$TMPFILE")"
 rm -f "$TMPFILE"
 
 # Start module configure_fstab_and_boot
-"${BASE_DIR}/modules/07_configure_fstab_and_boot.sh" "${MOUNT_POINT}" "${EFI_MOUNT_POINT_INSIDE}" || {
+"${BASE_DIR}/modules/07_configure_fstab_and_boot.sh" "${MOUNT_POINT}" "${EFI_MOUNT_POINT_INSIDE}" "${NVIDIA_PROPRIETARY_USED}"|| {
     echo "Error: Configuring fstab and bootloader failed, aborting..."
     exit 1
 }

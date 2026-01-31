@@ -5,8 +5,9 @@ set -e
 
 MOUNT_POINT="$1"
 EFI_MOUNT_POINT_INSIDE="$2"
-if [[ -z $MOUNT_POINT || -z $EFI_MOUNT_POINT_INSIDE ]]; then
-    echo "Usage: $0 MOUNT_POINT EFI_MOUNT_POINT_INSIDE"
+NVIDIA_PROPRIETARY_USED="$3"
+if [[ -z $MOUNT_POINT || -z $EFI_MOUNT_POINT_INSIDE || -z $NVIDIA_PROPRIETARY_USED ]]; then
+    echo "Usage: $0 MOUNT_POINT EFI_MOUNT_POINT_INSIDE NVIDIA_PROPRIETARY_USED"
     exit 1
 fi
 
@@ -27,6 +28,17 @@ genfstab -U "$MOUNT_POINT" >> "$MOUNT_POINT/etc/fstab" || {
     exit 1
 }
 echo "fstab Generated successfully."
+
+if [[ $NVIDIA_PROPRIETARY_USED -gt 0 ]]; then
+    echo "Configuring mkinitcpio for NVIDIA proprietary drivers..."
+    arch-chroot "${MOUNT_POINT}" sed -i 's/^MODULES=(/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm /' /etc/mkinitcpio.conf || {
+        echo "Configuring mkinitcpio for NVIDIA proprietary drivers failed, aborting..."
+        exit 1
+    }
+    echo "Regenerating initramfs..."
+    arch-chroot "${MOUNT_POINT}" mkinitcpio -P
+fi
+
 
 # Load package configs from packages.conf
 echo "Loading configs..."
@@ -60,6 +72,12 @@ while true; do
             exit 1
         }
         
+        # Add NVIDIA modeset parameter
+        if [[ $NVIDIA_PROPRIETARY_USED -gt 0 ]]; then
+            echo "Adding NVIDIA modeset parameter to GRUB..."
+            arch-chroot "${MOUNT_POINT}" sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 nvidia_drm.modeset=1"/' /etc/default/grub
+        fi
+
         echo "Running grub-mkconfig..."
         arch-chroot "$MOUNT_POINT" grub-mkconfig -o /boot/grub/grub.cfg || {
             echo "grub-mkconfig failed, aborting..."
@@ -111,10 +129,19 @@ while true; do
             echo "Unable to get UUID for ROOT."
             exit 1
         fi
+        
+        NVIDIA_PROPRIETARY=""
+
+        # Add NVIDIA proprietary argument
+        if [[ $NVIDIA_PROPRIETARY_USED -gt 0 ]]; then
+            NVIDIA_PROPRIETARY="nvidia_drm.modeset=1"
+            echo "NVIDIA modeset parameter will be added."
+        fi
 
         echo "Creating boot entry arch.conf..."
         sed -e "s|@UCODE_LINE@|${UCODE_LINE}|g" \
             -e "s|@ROOT_UUID@|${ROOT_UUID}|g" \
+            -e "s|@NVIDIA_PROPRIETARY@|${NVIDIA_PROPRIETARY}|g" \
             "$(dirname "$0")/../templates/arch.conf.tpl" > "${MOUNT_POINT}${EFI_MOUNT_POINT_INSIDE}/loader/entries/arch.conf" || {
                 echo "Failed to create arch.conf entry."
                 exit 1
