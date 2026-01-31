@@ -5,8 +5,7 @@
 
 ### Upcoming Features
 
-1. Auto-configuration for Optimus.
-2. Auto-configuration for PipeWire.
+1. Auto-configuration for PipeWire.
 2. Auto-configuration for various major desktop environments.
 
 ### Introduction
@@ -29,11 +28,10 @@ Implemented:
 * Automatically pacstrap base system and install CPU ucode.
 * Automatically detect and install proper GPU drivers.
 * Automatically configure fstab, install GRUB or systemd-boot after base system installation.
+* Automatically configure NVIDIA proprietary drivers, related arguments and nvidia-prime.
 
 Not Implemented yet:
-* Automatically configure Optimus.
 * Automatically configure PipeWire.
-* Automatically add arguments to GRUB or systemd-boot's config for NVIDIA proprietary drivers.
 * Automatically configure locale, add users and set password.
 * Auto-install desktop environment.
 
