@@ -29,10 +29,11 @@ Implemented:
 * Automatically detect and install proper GPU drivers.
 * Automatically configure fstab, install GRUB or systemd-boot after base system installation.
 * Automatically configure NVIDIA proprietary drivers, related arguments and nvidia-prime.
+* Add users, set passwords, and add users to groups.
 
 Not Implemented yet:
 * Automatically configure PipeWire.
-* Automatically configure locale, add users and set password.
+* Automatically configure locale.
 * Auto-install desktop environment.
 
 ### Requirements
@@ -72,6 +73,7 @@ Or, since this is a modularized script, you can also choose to run those modular
 5. It will then mount them to `/mnt`, with EFI partition mounted to `/mnt/boot`, and pacstrap the base system.
 6. The script will detect and install GPU drivers after base system installation.
 7. It will run `genfstab`, install and configure GRUB or systemd-boot automatically.
+8. It will then ask to set root password, add and configure users.
 
 More features will be added in future.
 
