@@ -76,7 +76,13 @@ eval "$(cat "$TMPFILE")"
 rm -f "$TMPFILE"
 
 # Start module configure_fstab_and_boot
-"${BASE_DIR}/modules/07_configure_fstab_and_boot.sh" "${MOUNT_POINT}" "${EFI_MOUNT_POINT_INSIDE}" "${NVIDIA_PROPRIETARY_USED}"|| {
+"${BASE_DIR}/modules/07_configure_fstab_and_boot.sh" "${MOUNT_POINT}" "${EFI_MOUNT_POINT_INSIDE}" "${NVIDIA_PROPRIETARY_USED}" || {
     echo "Error: Configuring fstab and bootloader failed, aborting..."
+    exit 1
+}
+
+# Start module add_users_and_set_passwords
+"${BASE_DIR}/modules/08_add_users_and_set_passwords.sh" "${MOUNT_POINT}" || {
+    echo "Error: Adding users and setting passwords failed, aborting..."
     exit 1
 }
