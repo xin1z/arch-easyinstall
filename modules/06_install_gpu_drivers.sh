@@ -1,15 +1,15 @@
 #!/bin/bash
 
  # Exit the script when any command inside fails
-set -e
+set -euo pipefail
 
-MOUNT_POINT="$1"
-TMPFILE="$2"
-
-if [[ -z "$MOUNT_POINT" || -z "$TMPFILE" ]]; then
+if [[ $# -ne 2 ]]; then
     echo "Usage: $0 MOUNT_POINT TMPFILE"
     exit 1
 fi
+
+MOUNT_POINT="$1"
+TMPFILE="$2"
 
 # Check if the mount point is valid
 if ! mountpoint -q "$MOUNT_POINT"; then

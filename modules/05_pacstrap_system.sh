@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # exit the script when any command inside fails
-set -e
+set -euo pipefail
 
-MOUNT_POINT="$1"
-
-if [[ -z "$MOUNT_POINT" ]]; then
+if [[ $# -ne 1 ]]; then
     echo "Usage: $0 MOUNT_POINT"
     exit 1
 fi
+
+MOUNT_POINT="$1"
 
 # Check if the mount point is valid
 if ! mountpoint -q "$MOUNT_POINT"; then

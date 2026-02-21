@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # exit the script when any command inside fails
-set -e
+set -euo pipefail
+
+if [[ $# -ne 5 ]]; then
+    echo "Usage: $0 EFI_SIZE ROOT_MIN TARGET_DISK DISK_SIZE_MiB TMPFILE"
+    exit 1
+fi
 
 # Get EFI_SIZE && ROOT_MIN && TARGET_DISK && DISK_SIZE_MiB
 EFI_SIZE=$1
@@ -9,11 +14,6 @@ ROOT_MIN=$2
 TARGET_DISK="$3"
 DISK_SIZE_MiB=$4
 TMPFILE=${!#}
-
-if [[ -z "$EFI_SIZE" || -z "$ROOT_MIN" || -z "$TARGET_DISK" || -z "$DISK_SIZE_MiB" || -z "$TMPFILE" ]]; then
-    echo "Usage: $0 EFI_SIZE ROOT_MIN TARGET_DISK DISK_SIZE_MiB TMPFILE"
-    exit 1
-fi
 
 echo "Start creating partitions."
 

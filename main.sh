@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # exit the script when any command inside fails
-set -e
+set -euo pipefail
 
 echo "LAUNCHED"
 echo "arch-easyinstall: an easy-to-use Arch install script with automatic detection and installation for drivers."

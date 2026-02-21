@@ -1,15 +1,16 @@
 #!/bin/bash
 
  # Exit the script when any command inside fails
-set -e
+set -euo pipefail
+
+if [[ $# -ne 3 ]]; then
+    echo "Usage: $0 MOUNT_POINT EFI_MOUNT_POINT_INSIDE NVIDIA_PROPRIETARY_USED"
+    exit 1
+fi
 
 MOUNT_POINT="$1"
 EFI_MOUNT_POINT_INSIDE="$2"
 NVIDIA_PROPRIETARY_USED="$3"
-if [[ -z $MOUNT_POINT || -z $EFI_MOUNT_POINT_INSIDE || -z $NVIDIA_PROPRIETARY_USED ]]; then
-    echo "Usage: $0 MOUNT_POINT EFI_MOUNT_POINT_INSIDE NVIDIA_PROPRIETARY_USED"
-    exit 1
-fi
 
 # Check if the mount point is valid
 if ! mountpoint -q "${MOUNT_POINT}"; then

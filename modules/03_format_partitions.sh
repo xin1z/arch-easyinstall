@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # exit the script when any command inside fails
-set -e
+set -euo pipefail
 
-TARGET_DISK="$1"
-USE_SWAP=$2
-
-if [[ -z "$TARGET_DISK" || -z "$USE_SWAP" ]]; then
+if [[ $# -ne 2 ]]; then
     echo "Usage: $0 TARGET_DISK USE_SWAP"
     exit 1
 fi
+
+TARGET_DISK="$1"
+USE_SWAP=$2
 
 echo "Formatting partitions..."
 

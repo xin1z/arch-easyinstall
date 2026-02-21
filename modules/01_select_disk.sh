@@ -1,16 +1,16 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
+
+if [[ $# -ne 3 ]]; then
+    echo "Usage: $0 EFI_SIZE ROOT_MINI TMPFILE"
+    exit 1
+fi
 
 # Parameters of the size of EFI && the minimum size of ROOT
 EFI_SIZE=$1
 ROOT_MIN=$2
 TMPFILE=${!#}
-
-if [[ -z "$EFI_SIZE" || -z "$ROOT_MIN" || -z "$TMPFILE" ]]; then
-    echo "Usage: $0 EFI_SIZE ROOT_MINI TMPFILE"
-    exit 1
-fi
 
 # List all available disks
 echo ""
