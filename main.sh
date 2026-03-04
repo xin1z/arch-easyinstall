@@ -24,7 +24,7 @@ TMPFILE=$(mktemp)
     exit 1
 }
 
-eval "$(cat "$TMPFILE")"
+source "$TMPFILE"
 rm -f "$TMPFILE"
 
 # Start module create_partitions
@@ -35,7 +35,7 @@ echo ""
     exit 1
 }
 
-eval "$(cat "$TMPFILE")"
+source "$TMPFILE"
 rm -f "$TMPFILE"
 
 # Start module format_partitions
@@ -72,7 +72,7 @@ TMPFILE=$(mktemp)
     exit 1
 }
 
-eval "$(cat "$TMPFILE")"
+source "$TMPFILE"
 rm -f "$TMPFILE"
 
 # Start module configure_fstab_and_boot
